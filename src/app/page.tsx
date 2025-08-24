@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { format } from 'date-fns';
 import { CalendarIcon, MapPinIcon, MoonIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -63,14 +63,14 @@ export default function Home() {
         setManualLon(position.coords.longitude.toString());
         setLoading(false);
       },
-      (error) => {
+      () => {
         setError('Unable to retrieve your location. Please enter coordinates manually.');
         setLoading(false);
       }
     );
   };
 
-  const fetchMoonPosition = async () => {
+  const fetchMoonPosition = useCallback(async () => {
     if (!location) {
       setError('Please set your location first.');
       return;
@@ -103,7 +103,7 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [location, date]);
 
   const handleManualLocation = () => {
     const lat = parseFloat(manualLat);
@@ -132,7 +132,7 @@ export default function Home() {
     if (location) {
       fetchMoonPosition();
     }
-  }, [location, date]);
+  }, [location, date, fetchMoonPosition]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-3 md:p-4">
@@ -142,7 +142,7 @@ export default function Home() {
              <MoonIcon className="w-6 h-6 md:w-8 md:h-8" />
              Sight Moon
            </h1>
-           <p className="text-slate-300 text-sm md:text-base">Discover the moon's position in the sky</p>
+           <p className="text-slate-300 text-sm md:text-base">Discover the moon&apos;s position in the sky</p>
          </div>
 
         <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2">
@@ -151,7 +151,7 @@ export default function Home() {
             <CardHeader>
               <CardTitle className="text-white">Location & Date</CardTitle>
               <CardDescription className="text-slate-300">
-                Set your location and choose a date to see the moon's position
+                Set your location and choose a date to see the moon&apos;s position
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-3 md:space-y-4">
