@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sight Moon OG Image</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1f2937 0%, #374151 50%, #1f2937 100%);
+            width: 1200px;
+            height: 630px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .container {
+            text-align: center;
+            padding: 60px;
+        }
+        
+        .moon-icon {
+            font-size: 120px;
+            margin-bottom: 30px;
+            display: block;
+        }
+        
+        .title {
+            font-size: 64px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            background: linear-gradient(45deg, #ffffff, #e5e7eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 28px;
+            color: #d1d5db;
+            margin-bottom: 40px;
+            font-weight: 300;
+        }
+        
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+        }
+        
+        .feature {
+            text-align: center;
+            font-size: 18px;
+            color: #9ca3af;
+        }
+        
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .compass {
+            width: 80px;
+            height: 80px;
+            border: 3px solid #6b7280;
+            border-radius: 50%;
+            margin: 20px auto;
+            position: relative;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .compass::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 30px;
+            background: #000;
+            transform: translate(-50%, -50%);
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="moon-icon">🌙</div>
+        <h1 class="title">Sight Moon</h1>
+        <p class="subtitle">Discover the moon's position in the sky</p>
+        
+        <div class="compass"></div>
+        
+        <div class="features">
+            <div class="feature">
+                <span class="feature-icon">📍</span>
+                <div>Location</div>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">🧭</span>
+                <div>Compass</div>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">📅</span>
+                <div>Date</div>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">📊</span>
+                <div>Data</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

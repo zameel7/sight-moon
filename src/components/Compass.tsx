@@ -104,9 +104,17 @@ export function Compass({ azimuth, className = '' }: CompassProps) {
 
   // Convert degrees to cardinal direction
   const getCardinalDirection = (degrees: number): string => {
-    // Normalize degrees to 0-360 range
-    const normalized = ((degrees % 360) + 360) % 360;
+    // Convert negative azimuth to positive (west of north convention)
+    let normalized = degrees;
+    if (normalized < 0) {
+      normalized = 360 + normalized;
+    }
     
+    // Ensure normalized is in 0-360 range
+    normalized = normalized % 360;
+    if (normalized < 0) normalized += 360;
+    
+    // Standard cardinal direction ranges
     if (normalized >= 337.5 || normalized < 22.5) return 'North';
     if (normalized >= 22.5 && normalized < 67.5) return 'Northeast';
     if (normalized >= 67.5 && normalized < 112.5) return 'East';
@@ -128,10 +136,10 @@ export function Compass({ azimuth, className = '' }: CompassProps) {
         className="border border-gray-300 rounded-lg bg-white w-full max-w-[200px] h-auto"
       />
               <div className="mt-2 text-center">
-          <p className="text-xs md:text-sm text-gray-600">
+          <p className="text-xs md:text-sm text-gray-300">
             Moon direction: {azimuth.toFixed(1)}°
           </p>
-          <p className="text-xs md:text-sm font-semibold text-gray-700">
+          <p className="text-xs md:text-sm font-semibold text-white">
             {getCardinalDirection(azimuth)}
           </p>
         </div>

@@ -28,9 +28,17 @@ export default function Home() {
 
   // Convert degrees to cardinal direction
   const getCardinalDirection = (degrees: number): string => {
-    // Normalize degrees to 0-360 range
-    const normalized = ((degrees % 360) + 360) % 360;
+    // Convert negative azimuth to positive (west of north convention)
+    let normalized = degrees;
+    if (normalized < 0) {
+      normalized = 360 + normalized;
+    }
     
+    // Ensure normalized is in 0-360 range
+    normalized = normalized % 360;
+    if (normalized < 0) normalized += 360;
+    
+    // Standard cardinal direction ranges
     if (normalized >= 337.5 || normalized < 22.5) return 'North';
     if (normalized >= 22.5 && normalized < 67.5) return 'Northeast';
     if (normalized >= 67.5 && normalized < 112.5) return 'East';
@@ -191,7 +199,7 @@ export default function Home() {
                 <Button
                   onClick={handleManualLocation}
                   variant="outline"
-                  className="w-full border-white/20 text-white hover:bg-white/10"
+                  className="w-full border-white/20 text-white hover:bg-white/10 bg-white/5"
                 >
                   Set Manual Location
                 </Button>
@@ -204,7 +212,7 @@ export default function Home() {
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
-                      className="w-full justify-start text-left font-normal border-white/20 text-white hover:bg-white/10"
+                      className="w-full justify-start text-left font-normal border-white/20 text-white hover:bg-white/10 bg-white/5"
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {format(date, 'PPP')}
@@ -274,11 +282,11 @@ export default function Home() {
                       </p>
                     </div>
                                         <div className="bg-white/10 p-2 md:p-3 rounded-lg">
-                      <p className="text-slate-300 text-xs md:text-sm">Direction</p>
+                      <p className="text-slate-300 text-xs md:text-sm">Azimuth</p>
                       <p className="text-white font-semibold text-sm md:text-base">
                         {moonData.azimuth !== undefined ? `${moonData.azimuth.toFixed(1)}°` : 'N/A'}
                       </p>
-                      <p className="text-gray-300 text-xs">
+                      <p className="text-white text-xs font-medium">
                         {moonData.azimuth !== undefined ? getCardinalDirection(moonData.azimuth) : 'N/A'}
                       </p>
                     </div>
