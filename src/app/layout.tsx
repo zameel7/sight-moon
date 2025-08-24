@@ -16,9 +16,9 @@ export const metadata: Metadata = {
   title: "Sight Moon - Moon Position Tracker",
   description: "Discover the moon's position in the sky with real-time tracking, compass visualization, and astronomical data.",
   icons: {
-    icon: '/favicon.svg',
-    shortcut: '/favicon.svg',
-    apple: '/favicon.svg',
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
   },
   keywords: ["moon", "astronomy", "moon position", "azimuth", "altitude", "compass", "sky tracking"],
   authors: [{ name: "Sight Moon" }],
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     siteName: 'Sight Moon',
          images: [
        {
-         url: '/og-image.svg',
+         url: '/og-image.png',
          width: 1200,
          height: 630,
          alt: 'Sight Moon - Moon Position Tracker',
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: "Sight Moon - Moon Position Tracker",
     description: "Discover the moon's position in the sky with real-time tracking, compass visualization, and astronomical data.",
-         images: ['/og-image.svg'],
+         images: ['/og-image.png'],
   },
   robots: {
     index: true,
