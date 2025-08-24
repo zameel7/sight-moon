@@ -29,14 +29,14 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://sight-moon.vercel.app'),
+  metadataBase: new URL('https://sight-moon.zameel7.me'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     title: "Sight Moon - Moon Position Tracker",
     description: "Discover the moon's position in the sky with real-time tracking, compass visualization, and astronomical data.",
-    url: 'https://sight-moon.vercel.app',
+    url: 'https://sight-moon.zameel7.me',
     siteName: 'Sight Moon',
          images: [
        {
