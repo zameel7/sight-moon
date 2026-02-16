@@ -1,25 +1,25 @@
 # Sight Moon
 
-A Next.js application that displays the moon's position in the sky using the API Verse moon position service. Features include geolocation detection, manual coordinate input, date selection, and a beautiful compass visualization.
+A Next.js application that displays the moon's position in the sky using the SunCalc library. Features include geolocation detection, manual coordinate input, date selection, and a real compass that rotates with your device.
 
 ## Features
 
 - 🌍 **Geolocation**: Get your current location automatically
 - 📍 **Manual Coordinates**: Enter latitude and longitude manually
-- 📅 **Date Selection**: Choose any date to see moon position
-- 🧭 **Compass Visualization**: Interactive compass showing moon direction
-- 📊 **Moon Data**: Display altitude, distance, phase, and illumination
+- 📅 **Date Selection**: Choose any date to see moon position (with real-time accuracy when viewing today)
+- 🧭 **Real Compass**: Device orientation support—hold your phone and the compass points toward geographic north
+- 📊 **Moon Data**: Altitude, azimuth, distance, and cardinal direction
 - 🎨 **Modern UI**: Beautiful dark theme with shadcn/ui components
-- 🔒 **Secure API**: Server-side API calls with environment variables
+- 📱 **No API Key**: Moon position computed client-side with SunCalc—works offline
 
 ## Tech Stack
 
-- **Framework**: Next.js 14 with App Router
+- **Framework**: Next.js 15 with App Router
 - **Styling**: Tailwind CSS
 - **Components**: shadcn/ui
 - **Icons**: Lucide React
 - **Date Handling**: date-fns
-- **API**: API Verse Moon Position Service
+- **Moon Calculations**: SunCalc (client-side, no API key)
 
 ## Setup
 
@@ -34,20 +34,12 @@ A Next.js application that displays the moon's position in the sky using the API
    npm install
    ```
 
-3. **Environment Variables**
-   Create a `.env.local` file in the root directory:
-   ```env
-   API_VERSE_API_KEY=your_api_key_here
-   ```
-   
-   Get your API key from [API Verse](https://apiverve.com/)
-
-4. **Run the development server**
+3. **Run the development server**
    ```bash
    npm run dev
    ```
 
-5. **Open your browser**
+4. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## Usage
@@ -55,18 +47,11 @@ A Next.js application that displays the moon's position in the sky using the API
 1. **Get Current Location**: Click the "Get Current Location" button to automatically detect your coordinates
 2. **Manual Coordinates**: Enter latitude and longitude manually if geolocation is not available
 3. **Select Date**: Use the date picker to choose any date (defaults to current date)
-4. **View Moon Data**: The app will automatically fetch and display:
+4. **View Moon Data**: The app will automatically compute and display:
    - Moon direction (azimuth) on the compass
    - Altitude above the horizon
    - Distance from Earth
-   - Moon phase
-   - Illumination percentage
-
-## API Endpoints
-
-- `GET /api/moon-position?lat={latitude}&lon={longitude}&date={MM-DD-YYYY}`
-  - Returns moon position data for the specified location and date
-  - Requires valid API key in environment variables
+5. **On mobile**: Tap "Enable compass" to use device orientation—the compass will rotate so North aligns with geographic north
 
 ## Project Structure
 
@@ -74,22 +59,18 @@ A Next.js application that displays the moon's position in the sky using the API
 src/
 ├── app/
 │   ├── api/moon-position/
-│   │   └── route.ts          # API route for moon position
+│   │   └── route.ts          # Optional API route (legacy)
 │   ├── globals.css           # Global styles
 │   ├── layout.tsx            # Root layout
 │   └── page.tsx              # Main page component
 ├── components/
 │   ├── ui/                   # shadcn/ui components
-│   └── Compass.tsx           # Custom compass component
+│   └── Compass.tsx           # Compass with device orientation
+├── hooks/
+│   └── useDeviceOrientation.ts
 └── lib/
     └── utils.ts              # Utility functions
 ```
-
-## Environment Variables
-
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `API_VERSE_API_KEY` | Your API Verse API key | Yes |
 
 ## Contributing
 

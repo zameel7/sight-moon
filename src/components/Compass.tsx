@@ -4,10 +4,11 @@ import { useEffect, useRef } from 'react';
 
 interface CompassProps {
   azimuth: number;
+  deviceHeading?: number | null;
   className?: string;
 }
 
-export function Compass({ azimuth, className = '' }: CompassProps) {
+export function Compass({ azimuth, deviceHeading = null, className = '' }: CompassProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -32,18 +33,18 @@ export function Compass({ azimuth, className = '' }: CompassProps) {
     ctx.stroke();
 
     // Draw cardinal directions
-    ctx.fillStyle = '#6B7280';
-    ctx.font = '16px Arial';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    // North
+    // North - prominent
+    ctx.fillStyle = '#1f2937';
+    ctx.font = 'bold 18px Arial';
     ctx.fillText('N', centerX, centerY - radius + 25);
-    // South
+    // South, East, West
+    ctx.fillStyle = '#6B7280';
+    ctx.font = '14px Arial';
     ctx.fillText('S', centerX, centerY + radius - 15);
-    // East
     ctx.fillText('E', centerX + radius - 15, centerY);
-    // West
     ctx.fillText('W', centerX - radius + 15, centerY);
 
     // Draw degree markers
@@ -68,15 +69,16 @@ export function Compass({ azimuth, className = '' }: CompassProps) {
     const arrowEndX = centerX + arrowLength * Math.sin(moonAngle);
     const arrowEndY = centerY - arrowLength * Math.cos(moonAngle);
 
-    // Arrow shaft
-    ctx.strokeStyle = '#000000';
+    // Arrow shaft (indigo for moon direction)
+    ctx.strokeStyle = '#6366f1';
+    ctx.fillStyle = '#6366f1';
     ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
     ctx.lineTo(arrowEndX, arrowEndY);
     ctx.stroke();
 
-    // Arrow head
+    // Arrow head (filled for visibility)
     const headLength = 15;
     const angle1 = moonAngle - Math.PI / 6;
     const angle2 = moonAngle + Math.PI / 6;
@@ -87,15 +89,16 @@ export function Compass({ azimuth, className = '' }: CompassProps) {
       arrowEndX - headLength * Math.sin(angle1),
       arrowEndY + headLength * Math.cos(angle1)
     );
-    ctx.moveTo(arrowEndX, arrowEndY);
     ctx.lineTo(
       arrowEndX - headLength * Math.sin(angle2),
       arrowEndY + headLength * Math.cos(angle2)
     );
+    ctx.closePath();
+    ctx.fill();
     ctx.stroke();
 
     // Center dot
-    ctx.fillStyle = '#000000';
+    ctx.fillStyle = '#6366f1';
     ctx.beginPath();
     ctx.arc(centerX, centerY, 5, 0, 2 * Math.PI);
     ctx.fill();
@@ -127,15 +130,22 @@ export function Compass({ azimuth, className = '' }: CompassProps) {
     return 'North';
   };
 
+  const rotation = deviceHeading != null ? -deviceHeading : 0;
+
   return (
     <div className={`flex flex-col items-center ${className}`}>
-      <canvas
+      <div
+        style={{ transform: `rotate(${rotation}deg)` }}
+        className="transition-transform duration-100 ease-out"
+      >
+        <canvas
         ref={canvasRef}
         width={200}
         height={200}
         className="border border-gray-300 rounded-lg bg-white w-full max-w-[200px] h-auto"
       />
-              <div className="mt-2 text-center">
+      </div>
+      <div className="mt-2 text-center">
           <p className="text-xs md:text-sm text-gray-300">
             Moon direction: {azimuth.toFixed(1)}°
           </p>

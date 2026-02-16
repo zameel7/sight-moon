@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { format } from 'date-fns';
 import { CalendarIcon, MapPinIcon, MoonIcon } from 'lucide-react';
+import SunCalc from 'suncalc';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -10,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Compass } from '@/components/Compass';
+import { useDeviceOrientation } from '@/hooks/useDeviceOrientation';
 
 interface MoonPosition {
   altitude: number;
@@ -25,6 +27,8 @@ export default function Home() {
   const [error, setError] = useState<string | null>(null);
   const [manualLat, setManualLat] = useState('');
   const [manualLon, setManualLon] = useState('');
+
+  const { heading: deviceHeading, permissionState, requestPermission } = useDeviceOrientation();
 
   // Convert degrees to cardinal direction
   const getCardinalDirection = (degrees: number): string => {
@@ -78,38 +82,41 @@ export default function Home() {
     );
   };
 
-  const fetchMoonPosition = useCallback(async () => {
+  const computeMoonPosition = useCallback(() => {
     if (!location) {
       setError('Please set your location first.');
       return;
     }
 
-    setLoading(true);
     setError(null);
 
     try {
-      const formattedDate = format(date, 'MM-dd-yyyy');
-      const response = await fetch(
-        `/api/moon-position?lat=${location.lat}&lon=${location.lon}&date=${formattedDate}`
+      // Use selected date with current time for real-time accuracy
+      const now = new Date();
+      const dateTime = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        now.getHours(),
+        now.getMinutes(),
+        now.getSeconds()
       );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to fetch moon position');
-      }
+      const pos = SunCalc.getMoonPosition(dateTime, location.lat, location.lon);
 
-      const data = await response.json();
-      
-      // Extract moon data from the nested structure
-      if (data.status === 'ok' && data.data?.moon) {
-        setMoonData(data.data.moon);
-      } else {
-        throw new Error('Invalid API response structure');
-      }
+      // SunCalc: altitude/azimuth in radians. Azimuth: 0 = South, clockwise.
+      // Convert to standard: 0 = North, 90 = East (clockwise).
+      const altitudeDeg = (pos.altitude * 180) / Math.PI;
+      const azimuthDegSouth = (pos.azimuth * 180) / Math.PI;
+      const azimuthDegNorth = ((azimuthDegSouth + 180) % 360 + 360) % 360;
+
+      setMoonData({
+        altitude: altitudeDeg,
+        azimuth: azimuthDegNorth,
+        distance: pos.distance,
+      });
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch moon position');
-    } finally {
-      setLoading(false);
+      setError(err instanceof Error ? err.message : 'Failed to compute moon position');
     }
   }, [location, date]);
 
@@ -138,9 +145,22 @@ export default function Home() {
 
   useEffect(() => {
     if (location) {
-      fetchMoonPosition();
+      computeMoonPosition();
     }
-  }, [location, date, fetchMoonPosition]);
+  }, [location, computeMoonPosition]);
+
+  // Refresh moon position every minute when viewing today (real-time updates)
+  useEffect(() => {
+    if (!location) return;
+    const isToday =
+      date.getDate() === new Date().getDate() &&
+      date.getMonth() === new Date().getMonth() &&
+      date.getFullYear() === new Date().getFullYear();
+    if (!isToday) return;
+
+    const interval = setInterval(computeMoonPosition, 60000);
+    return () => clearInterval(interval);
+  }, [location, date, computeMoonPosition]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-3 md:p-4">
@@ -264,7 +284,23 @@ export default function Home() {
                 <div className="space-y-3 md:space-y-4">
                   {/* Compass */}
                   {moonData.azimuth !== undefined && (
-                    <Compass azimuth={moonData.azimuth} className="mx-auto" />
+                    <div className="space-y-2">
+                      {permissionState === 'prompt' && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={requestPermission}
+                          className="w-full border-white/20 text-white hover:bg-white/10 text-xs"
+                        >
+                          Enable compass (point phone north)
+                        </Button>
+                      )}
+                      <Compass
+                        azimuth={moonData.azimuth}
+                        deviceHeading={deviceHeading}
+                        className="mx-auto"
+                      />
+                    </div>
                   )}
                   
                   {/* Moon Details */}

@@ -20,6 +20,7 @@
     "react": "19.1.0",
     "react-day-picker": "^9.9.0",
     "react-dom": "19.1.0",
+    "suncalc": "^1.9.0",
     "tailwind-merge": "^3.3.1"
   },
   "devDependencies": {
@@ -28,6 +29,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/suncalc": "^1.9.2",
     "eslint": "^9",
     "eslint-config-next": "15.5.0",
     "tailwindcss": "^4",
