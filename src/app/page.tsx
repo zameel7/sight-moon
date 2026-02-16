@@ -290,7 +290,7 @@ export default function Home() {
                           size="sm"
                           variant="outline"
                           onClick={requestPermission}
-                          className="w-full border-white/20 text-white hover:bg-white/10 text-xs"
+                          className="w-full border-white/30 bg-slate-800/90 text-white hover:bg-slate-700/90 text-xs"
                         >
                           Enable compass (point phone north)
                         </Button>
