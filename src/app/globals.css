@@ -8,6 +8,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-serif: var(--font-fraunces);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -119,4 +120,138 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Sight Moon: a pocket observatory. System serif keeps the display font local. */
+:root { --night: #080f20; --moonlight: #f2dfb4; --silver: #b1bbcf; }
+html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+body { background: var(--night); }
+.landing { position: relative; isolation: isolate; overflow: clip; color: #f4f0e7; background: radial-gradient(ellipse at 85% 12%, #17294470, transparent 32%), radial-gradient(ellipse at 5% 50%, #11223d66, transparent 35%), var(--night); }
+.starfield { pointer-events: none; position: absolute; inset: 0; z-index: -1; opacity: .5; background-image: radial-gradient(1px 1px at 31px 52px, #d0def0 95%, transparent), radial-gradient(1px 1px at 149px 209px, #b8c9e5 95%, transparent), radial-gradient(1.5px 1.5px at 257px 97px, #f2dfb4 95%, transparent); background-size: 317px 353px, 491px 457px, 673px 617px; }
+.starfield::after { content: ''; position: absolute; inset: 0; background: radial-gradient(1.5px 1.5px at 78px 132px, #fff5d5 95%, transparent); background-size: 523px 439px; animation: twinkle 7s ease-in-out infinite alternate; }
+@keyframes twinkle { from { opacity: .2; } to { opacity: .9; } }
+.landing :focus-visible { outline: 2px solid var(--moonlight); outline-offset: 6px; }
+.skip-link { position: fixed; left: 20px; top: -100px; z-index: 100; background: var(--moonlight); color: var(--night); padding: 16px; border-radius: 8px; }
+.skip-link:focus { top: 12px; }
+.section-shell { width: min(1120px, calc(100% - 40px)); margin-inline: auto; }
+.site-header { position: sticky; top: 0; z-index: 30; border-bottom: 1px solid #c5d4ee14; background: #080f20e8; backdrop-filter: blur(18px); }
+.header-inner { width: min(1200px, calc(100% - 40px)); margin: auto; height: 78px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.wordmark { display: inline-flex; align-items: center; gap: 9px; font-family: var(--font-fraunces), Georgia, serif; font-size: 25px; letter-spacing: -.9px; white-space: nowrap; }
+.wordmark svg, .wordmark-dot { color: var(--moonlight); }
+.wordmark-dot { margin-left: -8px; }
+.header-cta { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 12px 14px; min-height: 46px; border: 1px solid #f2dfb43b; border-radius: 5px; color: var(--moonlight); font-size: 12px; font-weight: 500; }
+.header-cta:hover, .location-button:hover { background: #f2dfb410; border-color: #f2dfb480; }
+.hero { padding-block: 68px 42px; display: grid; gap: 52px; align-items: center; }
+.eyebrow { font-size: 10px; font-weight: 500; line-height: 1.7; letter-spacing: 2.1px; color: var(--moonlight); }
+.tiny-star { margin-right: 8px; }
+.landing h1, .landing h2 { font-family: var(--font-fraunces), Georgia, serif; font-weight: 400; letter-spacing: -1.8px; text-wrap: balance; }
+.landing h1 { font-size: clamp(40px, 6vw, 67px); line-height: 1.13; margin: 24px 0; }
+.landing h1 em, .landing h2 em { color: var(--moonlight); font-weight: 400; }
+.hero-description { max-width: 420px; color: var(--silver); font-size: 15px; line-height: 1.9; }
+.primary-cta { display: inline-flex; align-items: center; justify-content: space-between; gap: 32px; padding: 16px 23px; margin-top: 30px; min-height: 54px; background: var(--moonlight); border: 1px solid var(--moonlight); color: #101827; font-size: 14px; font-weight: 600; border-radius: 5px; transition: background .2s, transform .2s; }
+.primary-cta:hover { background: #fff0ce; transform: translateY(-2px); }
+.hero-footnote { font-size: 11px; color: var(--silver); margin-top: 15px; }
+.explore-link { display: inline-flex; align-items: center; gap: 16px; min-height: 48px; font-size: 12px; color: var(--silver); margin-top: 26px; }
+.live-moon { min-width: 0; padding: 22px 18px 8px; border: 1px solid #c6d4ec24; border-radius: 12px; background: linear-gradient(145deg, #15243b77, #0b152766); position: relative; box-shadow: 0 24px 100px #0002; }
+.sky-report-label { display: flex; align-items: center; gap: 8px; font-size: 8px; letter-spacing: 1.4px; color: var(--silver); }
+.sky-report-label > span:last-child { margin-left: auto; letter-spacing: .5px; }
+.live-dot { display: inline-block; width: 5px; height: 5px; border-radius: 50%; background: var(--moonlight); box-shadow: 0 0 8px #f2dfb460; flex-shrink: 0; }
+.moon-art { position: relative; width: min(270px, 100%); height: 270px; margin: 25px auto 10px; display: grid; place-items: center; }
+.moon-art::before { content: ''; position: absolute; inset: 30px; background: radial-gradient(circle, #efdcb91b, #bbd5f008 58%, transparent 70%); filter: blur(20px); transform: scale(1.5); }
+.moon-art svg { width: 215px; height: 215px; position: relative; filter: drop-shadow(0 0 16px #dddac615); }
+.moon-orbit { position: absolute; inset: 0; border: 1px solid #c6d4ec18; border-radius: 50%; }
+.moon-orbit::after { content: ''; position: absolute; inset: 17px; border: 1px dashed #c6d4ec15; border-radius: 50%; }
+.orbit-north { position: absolute; top: -6px; padding: 0 8px; background: #101a2c; color: #b1bbcf; font-size: 9px; }
+.phase-caption { text-align: center; }
+.phase-caption .eyebrow { font-size: 8px; letter-spacing: 2px; color: var(--silver); }
+.landing .phase-caption h2 { font-size: 31px; letter-spacing: -.7px; margin-block: 7px 9px; }
+.phase-caption p { color: var(--silver); font-size: 12px; }
+.phase-caption p span { padding-inline: 8px; color: var(--moonlight); }
+.lunar-events { display: grid; grid-template-columns: 1fr 1fr; margin-top: 27px; padding-block: 20px; border-block: 1px solid #c6d4ec20; gap: 15px; }
+.lunar-events > div + div { border-left: 1px solid #c6d4ec20; padding-left: 20px; }
+.live-moon dt { font-size: 10px; color: var(--silver); margin-bottom: 5px; }
+.live-moon dd { font-size: 13px; font-variant-numeric: tabular-nums; }
+.approximation { font-size: 9px; line-height: 1.7; color: var(--silver); margin-top: 9px; }
+.location-button { display: flex; width: 100%; justify-content: center; gap: 10px; align-items: center; min-height: 48px; border: 1px solid #c6d4ec35; border-radius: 5px; margin-top: 19px; font-size: 12px; color: var(--moonlight); cursor: pointer; }
+.location-button:disabled { opacity: .65; cursor: wait; }
+.privacy-note { margin-top: 11px; text-align: center; color: var(--silver); font-size: 9px; line-height: 1.8; }
+.location-error { color: #f4cda8; font-size: 12px; line-height: 1.7; margin-block: 12px; }
+.local-report { margin-top: 18px; border-top: 1px solid #c6d4ec20; padding-top: 16px; }
+.horizon-status { font-size: 12px; color: var(--moonlight); display: flex; align-items: center; gap: 8px; }
+.position-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; margin-top: 16px; }
+.moon-skeleton { min-height: 580px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 25px; color: var(--silver); font-size: 12px; }
+.skeleton-moon { width: 180px; height: 180px; border-radius: 50%; background: #c6d4ec0a; border: 1px solid #c6d4ec15; }
+.skeleton-line { width: 160px; height: 20px; background: #c6d4ec0a; border-radius: 4px; }
+.sky-divider { display: flex; align-items: center; gap: 25px; color: var(--moonlight); font-size: 14px; padding-block: 22px; }
+.sky-divider span { height: 1px; flex: 1; background: linear-gradient(90deg, transparent, #c6d4ec25); }
+.sky-divider span:last-child { transform: rotate(180deg); }
+.finder-section, .how-section, .uses-section { padding-block: 62px; }
+.section-heading { margin-bottom: 32px; }
+.landing h2 { font-size: clamp(33px, 4vw, 46px); line-height: 1.17; margin-top: 14px; }
+.section-heading > p:last-child:not(.eyebrow) { color: var(--silver); font-size: 14px; line-height: 1.8; margin-top: 15px; }
+.finder-frame { padding: 16px; border: 1px solid #c6d4ec25; border-radius: 12px; background: #111d31a6; }
+.finder-topline { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 20px; color: var(--silver); font-size: 8px; letter-spacing: 1.3px; }
+.finder-topline > span:first-child { display: flex; align-items: center; gap: 8px; color: var(--moonlight); }
+.finder-frame button, .finder-frame input { min-height: 46px; }
+.finder-hint { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 18px; color: var(--silver); font-size: 10px; line-height: 1.7; }
+.steps { list-style: none; display: grid; gap: 30px; }
+.steps li { padding: 24px 0; border-top: 1px solid #c6d4ec25; }
+.step-top { display: flex; align-items: center; justify-content: space-between; color: var(--moonlight); margin-bottom: 24px; }
+.step-top span { font-family: var(--font-fraunces), Georgia, serif; font-size: 30px; color: #b4c4dd; }
+.landing h3 { font-size: 18px; font-weight: 500; letter-spacing: -.4px; }
+.steps p, .use-grid article > p:last-child { color: var(--silver); font-size: 13px; line-height: 1.9; margin-top: 12px; }
+.features-section { display: grid; gap: 34px; padding-block: 62px; border-block: 1px solid #c6d4ec20; }
+.feature-intro > p:not(.eyebrow) { color: var(--silver); font-size: 14px; line-height: 1.9; max-width: 350px; margin-top: 22px; }
+.mini-orbit { display: flex; align-items: center; gap: 20px; color: var(--moonlight); margin-top: 34px; }
+.mini-orbit span { color: var(--silver); font-size: 9px; letter-spacing: 2px; }
+.features-list article { display: flex; gap: 20px; padding-block: 23px; border-bottom: 1px solid #c6d4ec20; }
+.features-list article:last-child { border-bottom: 0; }
+.features-list svg { color: var(--moonlight); flex-shrink: 0; margin-top: 3px; }
+.features-list h3 { font-size: 16px; }
+.features-list p { color: var(--silver); font-size: 12px; line-height: 1.8; margin-top: 7px; }
+.use-grid { display: grid; gap: 15px; }
+.use-grid article { padding: 28px; border: 1px solid #c6d4ec24; border-radius: 8px; background: linear-gradient(145deg, #17243a88, #0b152744); }
+.use-symbol { display: block; color: var(--moonlight); font-size: 42px; line-height: 1; margin-bottom: 34px; font-family: var(--font-fraunces), Georgia, serif; }
+.use-grid .eyebrow { font-size: 8px; margin-bottom: 12px; }
+.use-grid h3 { font-family: var(--font-fraunces), Georgia, serif; font-size: 25px; font-weight: 400; }
+.faq-section { padding-block: 62px; display: grid; gap: 16px; }
+.faq-list details { border-bottom: 1px solid #c6d4ec25; }
+.faq-list details:first-child { border-top: 1px solid #c6d4ec25; }
+.faq-list summary { display: flex; align-items: center; justify-content: space-between; gap: 18px; list-style: none; cursor: pointer; min-height: 72px; padding-block: 20px; font-size: 14px; }
+.faq-list summary::-webkit-details-marker { display: none; }
+.faq-plus { font-size: 23px; font-weight: 300; color: var(--moonlight); transition: transform .2s; }
+.faq-list details[open] .faq-plus { transform: rotate(45deg); }
+.faq-list details p { color: var(--silver); font-size: 13px; line-height: 1.9; padding-bottom: 24px; padding-right: 24px; }
+.final-cta { text-align: center; padding: 65px 20px; margin-block: 30px 65px; border-block: 1px solid #f2dfb425; background: radial-gradient(ellipse at center, #c4b18a0b, transparent 70%); }
+.landing .final-cta h2 { font-size: clamp(43px, 6vw, 67px); margin-block: 19px; }
+.final-cta p { font-size: 13px; color: var(--silver); line-height: 1.8; }
+.site-footer { padding-bottom: 25px; }
+.footer-top { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+.footer-top p { color: var(--silver); font-size: 12px; }
+.site-footer nav .eyebrow { font-size: 8px; color: var(--silver); }
+.project-links { display: flex; flex-wrap: wrap; column-gap: 25px; margin-top: 5px; }
+.project-links a, .footer-bottom a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; font-size: 12px; color: #d2d8e5; }
+.project-links a:hover, .footer-bottom a:hover, .explore-link:hover { color: var(--moonlight); }
+.footer-bottom { border-top: 1px solid #c6d4ec20; display: flex; align-items: center; justify-content: space-between; margin-top: 26px; padding-top: 14px; color: var(--silver); font-size: 10px; }
+@media (min-width: 768px) {
+  .section-shell { width: min(1120px, calc(100% - 80px)); }
+  .hero { grid-template-columns: 1.15fr 1fr; gap: 50px; padding-block: 85px 65px; }
+  .hero-copy { padding-block: 30px; }
+  .live-moon { padding: 26px 28px 8px; }
+  .header-cta { font-size: 13px; padding-inline: 18px; }
+  .sky-report-label { font-size: 9px; }
+  .steps { grid-template-columns: repeat(3, 1fr); gap: 36px; }
+  .features-section { grid-template-columns: 1fr 1fr; gap: 80px; padding-block: 85px; }
+  .use-grid { grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .use-grid article { padding: 28px 23px; }
+  .faq-section { grid-template-columns: .85fr 1.3fr; gap: 65px; padding-block: 85px; }
+  .finder-frame { padding: 26px 30px 30px; }
+  .finder-topline { font-size: 9px; margin-bottom: 25px; }
+  .finder-frame > div.w-full > div { max-width: none; }
+  .finder-section, .how-section, .uses-section { padding-block: 80px; }
+  .footer-top { flex-direction: row; justify-content: space-between; align-items: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
 }
