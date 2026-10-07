@@ -65,17 +65,23 @@ function MoonArt({ phase }: { phase: number }) {
   return (
     <div className="moon-art" aria-hidden="true">
       <div className="moon-orbit" />
-      <span className="orbit-north">N</span>
+      <span className="orbit-north">N</span><span className="orbit-east">E</span><span className="orbit-south">S</span><span className="orbit-west">W</span>
       <svg viewBox="0 0 240 240" focusable="false">
         <defs>
+          <filter id={`${id}-texture`}>
+            <feTurbulence type="fractalNoise" baseFrequency=".075" numOctaves="4" seed="8" result="noise" />
+            <feColorMatrix in="noise" type="saturate" values="0" />
+            <feComposite in2="SourceGraphic" operator="in" />
+            <feBlend in="SourceGraphic" mode="multiply" />
+          </filter>
           <radialGradient id={`${id}-light`} cx="35%" cy="30%">
             <stop stopColor="#fff6dd" />
             <stop offset=".65" stopColor="#d9d4c4" />
             <stop offset="1" stopColor="#8c9296" />
           </radialGradient>
           <radialGradient id={`${id}-dark`}>
-            <stop stopColor="#202a3a" />
-            <stop offset="1" stopColor="#111b2c" />
+            <stop stopColor="#354039" />
+            <stop offset="1" stopColor="#202924" />
           </radialGradient>
           <clipPath id={`${id}-lit`}>
             <path d={`M${limb.join(" L")} L${terminator.join(" L")} Z`} />
@@ -90,7 +96,7 @@ function MoonArt({ phase }: { phase: number }) {
           strokeOpacity=".12"
         />
         <g clipPath={`url(#${id}-lit)`}>
-          <circle cx="120" cy="120" r="100" fill={`url(#${id}-light)`} />
+          <circle cx="120" cy="120" r="100" fill={`url(#${id}-light)`} filter={`url(#${id}-texture)`} />
           <g fill="#626a6c" opacity=".17">
             <ellipse cx="82" cy="81" rx="28" ry="32" />
             <ellipse cx="141" cy="66" rx="21" ry="18" />
@@ -204,7 +210,7 @@ export function LiveMoon() {
   return (
     <div className="live-moon">
       <div className="sky-report-label">
-        <span className="live-dot" /> YOUR LUNAR FIELD NOTES{" "}
+        <span className="live-dot" /> THE SKY, RIGHT NOW{" "}
         <span>
           {now.toLocaleDateString(undefined, {
             month: "short",

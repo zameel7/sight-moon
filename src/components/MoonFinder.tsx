@@ -2,10 +2,9 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { format } from 'date-fns';
-import { CalendarIcon, MapPinIcon, MoonIcon } from 'lucide-react';
+import { ArrowUpRight, CalendarIcon, LocateFixed, MapPinIcon, MoonIcon } from 'lucide-react';
 import SunCalc from 'suncalc';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Calendar } from '@/components/ui/calendar';
@@ -78,7 +77,8 @@ export function MoonFinder() {
       () => {
         setError('Unable to retrieve your location. Please enter coordinates manually.');
         setLoading(false);
-      }
+      },
+      { timeout: 15000, maximumAge: 60000 }
     );
   };
 
@@ -121,8 +121,8 @@ export function MoonFinder() {
   }, [location, date]);
 
   const handleManualLocation = () => {
-    const lat = parseFloat(manualLat);
-    const lon = parseFloat(manualLon);
+    const lat = manualLat.trim() ? Number(manualLat) : NaN;
+    const lon = manualLon.trim() ? Number(manualLon) : NaN;
 
     if (isNaN(lat) || isNaN(lon)) {
       setError('Please enter valid coordinates.');
@@ -163,181 +163,31 @@ export function MoonFinder() {
   }, [location, date, computeMoonPosition]);
 
   return (
-    <div className="w-full">
-      <div className="max-w-4xl mx-auto">
-        <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2">
-          {/* Location and Date Controls */}
-          <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-            <CardHeader>
-              <CardTitle className="text-white">Location & Date</CardTitle>
-              <CardDescription className="text-slate-300">
-                Set your location and choose a date to see the moon&apos;s position
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3 md:space-y-4">
-              {/* Current Location Button */}
-              <div>
-                <Button
-                  onClick={getCurrentLocation}
-                  disabled={loading}
-                  className="w-full bg-blue-600 hover:bg-blue-700"
-                >
-                  <MapPinIcon className="w-4 h-4 mr-2" />
-                  {loading ? 'Getting Location...' : 'Get Current Location'}
-                </Button>
-              </div>
-
-              {/* Manual Coordinates */}
-              <div className="space-y-2">
-                <Label htmlFor="latitude" className="text-white">Manual Coordinates</Label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <Input
-                    id="latitude"
-                    type="number"
-                    placeholder="Latitude"
-                    value={manualLat}
-                    onChange={(e) => setManualLat(e.target.value)}
-                    className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-500"
-                  />
-                  <Input
-                    id="longitude"
-                    type="number"
-                    placeholder="Longitude"
-                    value={manualLon}
-                    onChange={(e) => setManualLon(e.target.value)}
-                    className="bg-white border-gray-300 text-gray-900 placeholder:text-gray-500"
-                  />
-                </div>
-                <Button
-                  onClick={handleManualLocation}
-                  variant="outline"
-                  className="w-full border-white/20 text-white hover:bg-white/10 bg-white/5"
-                >
-                  Set Manual Location
-                </Button>
-              </div>
-
-              {/* Date Selection */}
-              <div className="space-y-2">
-                <Label className="text-white">Date</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start text-left font-normal border-white/20 text-white hover:bg-white/10 bg-white/5"
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {format(date, 'PPP')}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={date}
-                      onSelect={(newDate) => newDate && setDate(newDate)}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-
-              {/* Error Display */}
-              {error && (
-                <div className="p-3 bg-red-500/20 border border-red-500/30 rounded-md">
-                  <p className="text-red-300 text-sm">{error}</p>
-                </div>
-              )}
-
-              {/* Location Display */}
-              {location && (
-                <div className="p-3 bg-green-500/20 border border-green-500/30 rounded-md">
-                  <p className="text-green-300 text-sm">
-                    Location: {location.lat.toFixed(4)}, {location.lon.toFixed(4)}
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Moon Position Display */}
-          <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-            <CardHeader>
-              <CardTitle className="text-white">Moon Position</CardTitle>
-              <CardDescription className="text-slate-300">
-                Current moon data for your location
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-3 md:space-y-4">
-              {loading ? (
-                <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-                </div>
-              ) : moonData ? (
-                <div className="space-y-3 md:space-y-4">
-                  {/* Compass */}
-                  {moonData.azimuth !== undefined && (
-                    <div className="space-y-2">
-                      {permissionState === 'prompt' && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={requestPermission}
-                          className="w-full border-white/30 bg-slate-800/90 text-white hover:bg-slate-700/90 text-xs"
-                        >
-                          Enable compass (point phone north)
-                        </Button>
-                      )}
-                      <Compass
-                        azimuth={moonData.azimuth}
-                        deviceHeading={deviceHeading}
-                        className="mx-auto"
-                      />
-                    </div>
-                  )}
-                  
-                  {/* Moon Details */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 text-sm">
-                    <div className="bg-white/10 p-2 md:p-3 rounded-lg">
-                      <p className="text-slate-300 text-xs md:text-sm">Altitude</p>
-                      <p className="text-white font-semibold text-sm md:text-base">
-                        {moonData.altitude !== undefined ? `${moonData.altitude.toFixed(1)}°` : 'N/A'}
-                      </p>
-                    </div>
-                    <div className="bg-white/10 p-2 md:p-3 rounded-lg">
-                      <p className="text-slate-300 text-xs md:text-sm">Distance</p>
-                      <p className="text-white font-semibold text-sm md:text-base">
-                        {moonData.distance !== undefined ? `${moonData.distance.toFixed(0)} km` : 'N/A'}
-                      </p>
-                    </div>
-                                        <div className="bg-white/10 p-2 md:p-3 rounded-lg">
-                      <p className="text-slate-300 text-xs md:text-sm">Azimuth</p>
-                      <p className="text-white font-semibold text-sm md:text-base">
-                        {moonData.azimuth !== undefined ? `${moonData.azimuth.toFixed(1)}°` : 'N/A'}
-                      </p>
-                      <p className="text-white text-xs font-medium">
-                        {moonData.azimuth !== undefined ? getCardinalDirection(moonData.azimuth) : 'N/A'}
-                      </p>
-                    </div>
-                    <div className="bg-white/10 p-2 md:p-3 rounded-lg">
-                      <p className="text-slate-300 text-xs md:text-sm">Status</p>
-                      <p className="text-white font-semibold text-sm md:text-base">
-                        {moonData.altitude !== undefined ? (moonData.altitude > 0 ? 'Above Horizon' : 'Below Horizon') : 'N/A'}
-                      </p>
-                    </div>
-                  </div>
-                  
-
-                </div>
-              ) : (
-                <div className="text-center py-8 text-slate-400">
-                  <MoonIcon className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                  <p>Set your location to see moon position data</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+    <div className="finder-grid">
+      <section className="finder-controls" aria-labelledby="location-title">
+        <div className="panel-heading"><span className="panel-icon"><MapPinIcon size={20} /></span><div><h3 id="location-title">Make it your sky</h3><p>Start with your location.</p></div><span className="panel-number">01</span></div>
+        <Button onClick={getCurrentLocation} disabled={loading} className="locate-cta"><LocateFixed size={17} />{loading ? 'Finding your location…' : 'Use my current location'}<ArrowUpRight size={16} /></Button>
+        <div className="form-divider"><span />or enter coordinates<span /></div>
+        <form onSubmit={(event) => { event.preventDefault(); handleManualLocation(); }}>
+          <div className="coordinate-inputs">
+            <div><Label htmlFor="latitude">Latitude</Label><Input id="latitude" type="number" step="any" min="-90" max="90" placeholder="e.g. 51.5072" value={manualLat} onChange={(event) => setManualLat(event.target.value)} /></div>
+            <div><Label htmlFor="longitude">Longitude</Label><Input id="longitude" type="number" step="any" min="-180" max="180" placeholder="e.g. −0.1276" value={manualLon} onChange={(event) => setManualLon(event.target.value)} /></div>
+          </div>
+          <Button type="submit" variant="outline" className="manual-cta">Set location<ArrowUpRight size={16} /></Button>
+        </form>
+        <div className="date-field"><Label htmlFor="observation-date">Your date</Label><Popover><PopoverTrigger asChild><Button id="observation-date" variant="outline" className="date-button"><CalendarIcon size={17} />{format(date, 'MMMM d, yyyy')}<span>Change</span></Button></PopoverTrigger><PopoverContent className="w-auto p-0" align="start"><Calendar mode="single" selected={date} onSelect={(newDate) => newDate && setDate(newDate)} initialFocus /></PopoverContent></Popover><p>Position uses the current time on your chosen date.</p></div>
+        {error && <p className="finder-error" role="alert">{error}</p>}
+        {location && <p className="location-confirmation" role="status"><span className="live-dot" />Location set · {location.lat.toFixed(4)}, {location.lon.toFixed(4)}</p>}
+      </section>
+      <section className="finder-result" aria-labelledby="position-title" aria-busy={loading}>
+        <div className="panel-heading"><span className="panel-icon"><MoonIcon size={20} /></span><div><h3 id="position-title">Your moon’s position</h3><p>{moonData ? 'A little direction for your next look up.' : 'A view of the sky from where you are.'}</p></div><span className="panel-number">02</span></div>
+        {loading ? <div className="finder-empty" role="status"><LocateFixed className="locating-icon" size={40} /><h4>Finding your place…</h4><p>Allow location access in your browser,<br />or enter your coordinates on the left.</p></div> : moonData ? <>
+          <div className="compass-result"><Compass azimuth={moonData.azimuth} deviceHeading={deviceHeading} /><div className="direction-caption"><span className="eyebrow">LOOK TOWARD</span><h4>{getCardinalDirection(moonData.azimuth)}</h4><p>{moonData.altitude > 0 ? `${moonData.altitude.toFixed(1)}° above the horizon` : 'Currently below your horizon'}</p></div></div>
+          {permissionState === 'prompt' && <Button variant="outline" onClick={requestPermission} className="compass-enable">Enable live compass</Button>}
+          <dl className="moon-metrics"><div><dt>Direction</dt><dd>{moonData.azimuth.toFixed(1)}<span>°</span></dd></div><div><dt>Altitude</dt><dd>{moonData.altitude.toFixed(1)}<span>°</span></dd></div><div><dt>Distance</dt><dd>{Math.round(moonData.distance).toLocaleString()}<span> km</span></dd></div></dl>
+          <p className="result-note"><span className="live-dot" />{moonData.altitude > 0 ? 'Above the horizon · visibility depends on your sky' : 'Below the horizon · try a different date'}</p>
+        </> : <div className="finder-empty"><div className="empty-orbit"><MoonIcon size={38} strokeWidth={1} /><span>N</span><i /></div><h4>A whole sky is waiting.</h4><p>Set your location to see the moon’s<br />direction, altitude, and distance.</p><span className="empty-tag"><MapPinIcon size={12} /> WAITING FOR YOUR LOCATION</span></div>}
+      </section>
     </div>
   );
 }

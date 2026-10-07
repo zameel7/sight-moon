@@ -1,7 +1,5 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-
 interface CompassProps {
   azimuth: number;
   deviceHeading?: number | null;
@@ -9,150 +7,18 @@ interface CompassProps {
 }
 
 export function Compass({ azimuth, deviceHeading = null, className = '' }: CompassProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    const radius = Math.min(centerX, centerY) - 20;
-
-    // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    // Draw compass circle
-    ctx.strokeStyle = '#374151';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-    ctx.stroke();
-
-    // Draw cardinal directions
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-
-    // North - prominent
-    ctx.fillStyle = '#1f2937';
-    ctx.font = 'bold 18px Arial';
-    ctx.fillText('N', centerX, centerY - radius + 25);
-    // South, East, West
-    ctx.fillStyle = '#6B7280';
-    ctx.font = '14px Arial';
-    ctx.fillText('S', centerX, centerY + radius - 15);
-    ctx.fillText('E', centerX + radius - 15, centerY);
-    ctx.fillText('W', centerX - radius + 15, centerY);
-
-    // Draw degree markers
-    ctx.strokeStyle = '#9CA3AF';
-    ctx.lineWidth = 1;
-    for (let i = 0; i < 360; i += 30) {
-      const angle = (i * Math.PI) / 180;
-      const startX = centerX + (radius - 15) * Math.sin(angle);
-      const startY = centerY - (radius - 15) * Math.cos(angle);
-      const endX = centerX + radius * Math.sin(angle);
-      const endY = centerY - radius * Math.cos(angle);
-      
-      ctx.beginPath();
-      ctx.moveTo(startX, startY);
-      ctx.lineTo(endX, endY);
-      ctx.stroke();
-    }
-
-    // Draw moon direction arrow
-    const moonAngle = (azimuth * Math.PI) / 180;
-    const arrowLength = radius - 30;
-    const arrowEndX = centerX + arrowLength * Math.sin(moonAngle);
-    const arrowEndY = centerY - arrowLength * Math.cos(moonAngle);
-
-    // Arrow shaft (indigo for moon direction)
-    ctx.strokeStyle = '#6366f1';
-    ctx.fillStyle = '#6366f1';
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(centerX, centerY);
-    ctx.lineTo(arrowEndX, arrowEndY);
-    ctx.stroke();
-
-    // Arrow head (filled for visibility)
-    const headLength = 15;
-    const angle1 = moonAngle - Math.PI / 6;
-    const angle2 = moonAngle + Math.PI / 6;
-    
-    ctx.beginPath();
-    ctx.moveTo(arrowEndX, arrowEndY);
-    ctx.lineTo(
-      arrowEndX - headLength * Math.sin(angle1),
-      arrowEndY + headLength * Math.cos(angle1)
-    );
-    ctx.lineTo(
-      arrowEndX - headLength * Math.sin(angle2),
-      arrowEndY + headLength * Math.cos(angle2)
-    );
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    // Center dot
-    ctx.fillStyle = '#6366f1';
-    ctx.beginPath();
-    ctx.arc(centerX, centerY, 5, 0, 2 * Math.PI);
-    ctx.fill();
-
-  }, [azimuth]);
-
-  // Convert degrees to cardinal direction
-  const getCardinalDirection = (degrees: number): string => {
-    // Convert negative azimuth to positive (west of north convention)
-    let normalized = degrees;
-    if (normalized < 0) {
-      normalized = 360 + normalized;
-    }
-    
-    // Ensure normalized is in 0-360 range
-    normalized = normalized % 360;
-    if (normalized < 0) normalized += 360;
-    
-    // Standard cardinal direction ranges
-    if (normalized >= 337.5 || normalized < 22.5) return 'North';
-    if (normalized >= 22.5 && normalized < 67.5) return 'Northeast';
-    if (normalized >= 67.5 && normalized < 112.5) return 'East';
-    if (normalized >= 112.5 && normalized < 157.5) return 'Southeast';
-    if (normalized >= 157.5 && normalized < 202.5) return 'South';
-    if (normalized >= 202.5 && normalized < 247.5) return 'Southwest';
-    if (normalized >= 247.5 && normalized < 292.5) return 'West';
-    if (normalized >= 292.5 && normalized < 337.5) return 'Northwest';
-    
-    return 'North';
-  };
-
-  const rotation = deviceHeading != null ? -deviceHeading : 0;
-
   return (
-    <div className={`flex flex-col items-center ${className}`}>
-      <div
-        style={{ transform: `rotate(${rotation}deg)` }}
-        className="transition-transform duration-100 ease-out"
-      >
-        <canvas
-        ref={canvasRef}
-        width={200}
-        height={200}
-        className="border border-gray-300 rounded-lg bg-white w-full max-w-[200px] h-auto"
-      />
-      </div>
-      <div className="mt-2 text-center">
-          <p className="text-xs md:text-sm text-gray-300">
-            Moon direction: {azimuth.toFixed(1)}°
-          </p>
-          <p className="text-xs md:text-sm font-semibold text-white">
-            {getCardinalDirection(azimuth)}
-          </p>
-        </div>
+    <div className={`compass ${className}`}>
+      <svg viewBox="0 0 240 240" role="img" aria-label={`Moon direction ${azimuth.toFixed(1)} degrees from north`}>
+        <g style={{ transform: `rotate(${deviceHeading != null ? -deviceHeading : 0}deg)`, transformOrigin: '120px 120px', transition: 'transform 100ms ease-out' }}>
+          <circle cx="120" cy="120" r="108" fill="none" stroke="currentColor" strokeOpacity=".17" />
+          <circle cx="120" cy="120" r="80" fill="none" stroke="currentColor" strokeOpacity=".08" strokeDasharray="2 5" />
+          {Array.from({ length: 72 }, (_, i) => <line key={i} x1="120" y1="12" x2="120" y2={i % 6 === 0 ? 23 : 17} stroke="currentColor" strokeOpacity={i % 6 === 0 ? .5 : .2} transform={`rotate(${i * 5} 120 120)`} />)}
+          <g fill="currentColor" textAnchor="middle" dominantBaseline="central" fontSize="12" fontFamily="sans-serif"><text x="120" y="39" fill="#df936b">N</text><text x="201" y="120">E</text><text x="120" y="201">S</text><text x="39" y="120">W</text></g>
+          <g transform={`rotate(${azimuth} 120 120)`}><path d="M120 57 L130 127 L120 120 L110 127 Z" fill="#df936b" /><path d="M120 183 L110 127 L120 133 L130 127 Z" fill="currentColor" fillOpacity=".15" /><circle cx="120" cy="120" r="4" fill="#f7f6f2" /></g>
+        </g>
+      </svg>
+      <p>{deviceHeading != null ? 'Live compass active' : 'North at the top'}</p>
     </div>
   );
 }
