@@ -19,7 +19,7 @@ interface MoonPosition {
   distance: number;
 }
 
-export default function Home() {
+export function MoonFinder() {
   const [location, setLocation] = useState<{ lat: number; lon: number } | null>(null);
   const [date, setDate] = useState<Date>(new Date());
   const [moonData, setMoonData] = useState<MoonPosition | null>(null);
@@ -163,16 +163,8 @@ export default function Home() {
   }, [location, date, computeMoonPosition]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-3 md:p-4">
+    <div className="w-full">
       <div className="max-w-4xl mx-auto">
-                 <div className="text-center mb-6 md:mb-8">
-           <h1 className="text-2xl md:text-4xl font-bold text-white mb-2 flex items-center justify-center gap-2">
-             <MoonIcon className="w-6 h-6 md:w-8 md:h-8" />
-             Sight Moon
-           </h1>
-           <p className="text-slate-300 text-sm md:text-base">Discover the moon&apos;s position in the sky</p>
-         </div>
-
         <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2">
           {/* Location and Date Controls */}
           <Card className="bg-white/10 backdrop-blur-sm border-white/20">
