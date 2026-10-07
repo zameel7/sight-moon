@@ -58,8 +58,6 @@ A Next.js application that displays the moon's position in the sky using the Sun
 ```
 src/
 ├── app/
-│   ├── api/moon-position/
-│   │   └── route.ts          # Optional API route (legacy)
 │   ├── globals.css           # Global styles
 │   ├── layout.tsx            # Root layout
 │   └── page.tsx              # Main page component
